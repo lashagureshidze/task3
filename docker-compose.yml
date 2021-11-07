@@ -1,0 +1,56 @@
+version: "3.9"
+
+networks:
+  sender:
+  recipient:
+
+services:
+  eureka-server:
+    container_name: eureka-server
+    build: ./eureka-server
+    image: eureka-server:latest
+    ports:
+      - 8761:8761
+    networks:
+      - sender
+      - recipient
+
+  micro-sender:
+    container_name: micro-sender
+    build: ./micro-sender
+    image: micro-sender:latest
+    ports:
+      - 8081:8081
+    networks:
+      - sender
+
+  micro-recipient:
+    container_name: micro-recipient
+    build: ./micro-recipient
+    image: micro-recipient:latest
+    ports:
+      - 8082:8082
+    networks:
+      - recipient
+
+  micro-collector:
+    container_name: micro-collector
+    build: ./micro-collector
+    image: micro-collector:latest
+    ports:
+      - 8083:8083
+    networks:
+      - recipient
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: bitnami/rabbitmq:3.9.8
+    environment:
+      RABBITMQ_USERNAME: user
+      RABBITMQ_PASSWORD: pass
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - sender
+      - recipient
