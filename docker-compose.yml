@@ -15,33 +15,6 @@ services:
       - sender
       - recipient
 
-  micro-sender:
-    container_name: micro-sender
-    build: ./micro-sender
-    image: micro-sender:latest
-    ports:
-      - 8081:8081
-    networks:
-      - sender
-
-  micro-recipient:
-    container_name: micro-recipient
-    build: ./micro-recipient
-    image: micro-recipient:latest
-    ports:
-      - 8082:8082
-    networks:
-      - recipient
-
-  micro-collector:
-    container_name: micro-collector
-    build: ./micro-collector
-    image: micro-collector:latest
-    ports:
-      - 8083:8083
-    networks:
-      - recipient
-
   rabbitmq:
     container_name: rabbitmq
     image: bitnami/rabbitmq:3.9.8
@@ -54,3 +27,67 @@ services:
     networks:
       - sender
       - recipient
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prom.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - sender
+      - recipient
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    environment:
+      GF_SECURITY_ADMIN_USER: user
+      GF_SECURITY_ADMIN_PASSWORD: pass
+    networks:
+      - sender
+      - recipient
+
+  micro-sender:
+    container_name: micro-sender
+    build: ./micro-sender
+    image: micro-sender:latest
+    ports:
+      - 8081:8081
+    networks:
+      - sender
+    depends_on:
+      eureka-server:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  micro-recipient:
+    container_name: micro-recipient
+    build: ./micro-recipient
+    image: micro-recipient:latest
+    ports:
+      - 8082:8082
+    networks:
+      - recipient
+    depends_on:
+      eureka-server:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  micro-collector:
+    container_name: micro-collector
+    build: ./micro-collector
+    image: micro-collector:latest
+    ports:
+      - 8083:8083
+    networks:
+      - recipient
+    depends_on:
+      eureka-server:
+        condition: service_started
+      rabbitmq:
+        condition: service_started

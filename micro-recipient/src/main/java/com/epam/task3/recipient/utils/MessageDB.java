@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MessageDB {
 
-    private static final List<String> db = Collections.synchronizedList(new LinkedList<>());
+    public static final List<String> db = Collections.synchronizedList(new LinkedList<>());
 
     public static void addMessage(String message) {
         db.add(message);
