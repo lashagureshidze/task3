@@ -91,3 +91,29 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_started
+
+  micro-visualizer:
+    container_name: micro-visualizer
+    build: ./micro-visualizer
+    image: micro-visualizer:latest
+    ports:
+      - 8084:8084
+    networks:
+      - recipient
+    depends_on:
+      eureka-server:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: demo
+    ports:
+      - 5432:5432
+    networks:
+      - recipient

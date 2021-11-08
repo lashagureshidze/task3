@@ -48,4 +48,14 @@ services
 <td>http://localhost:8083</td>
 <td></td>
 </tr>
+<tr>
+<td>micro-visualizer</td>
+<td>http://localhost:8084</td>
+<td></td>
+</tr>
+<tr>
+<td>postgres</td>
+<td>localhost:5432</td>
+<td>postgres / postgres</td>
+</tr>
 </table>

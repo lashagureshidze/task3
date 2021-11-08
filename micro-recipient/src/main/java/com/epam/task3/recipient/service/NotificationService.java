@@ -16,7 +16,7 @@ public class NotificationService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 2000, initialDelay = 10000)
     public void readMessage() {
         String message = null;
         try {
